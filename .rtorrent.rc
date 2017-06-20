@@ -1,0 +1,45 @@
+# bandwidth and peers
+download_rate         = 0
+upload_rate           = 0
+min_peers             = 500
+max_peers             = 500
+min_peers_seed        = -1
+max_peers_seed        = -1
+max_uploads           = 500
+max_uploads_global    = 500
+max_downloads_global  = 500
+
+# connections
+dht                   = off
+dht_port              = 10001
+port_range            = 10000-10000
+port_random           = no
+check_hash            = no
+use_udp_trackers      = yes
+peer_exchange         = yes
+encryption            = allow_incoming,try_outgoing,enable_retry
+#scgi_port            = 127.0.0.1:5000
+scgi_local            = /tmp/rpc.socket
+execute               = chmod,666,/tmp/rpc.socket
+
+# folders
+directory             = /raid0/rtorrent/data
+session               = /var/rtorrent/session
+
+# shedules
+schedule              = session_save, 300, 300, session_save=
+schedule              = low_diskspace, 30, 30, close_low_diskspace=20480M
+system.method.set_key = event.download.erased, remove_files, "execute = {rm, -rf, --, $d.base_path= &}"
+system.method.set_key = event.download.finished, rsync_files, "execute = {sh, -c, /usr/local/bin/rsync_rtorrent &}"
+
+system.file.max_size.set = -1
+
+execute = {sh, -c, /usr/bin/php /raid1/www/.../php/initplugins.php &}
+
+# performance tweaks
+network.receive_buffer.size.set = 4M
+network.send_buffer.size.set    = 4M
+max_memory_usage                = 16384M
+network.http.max_open.set       = 128
+network.max_open_files.set      = 512
+encoding_list                   = UTF-8
